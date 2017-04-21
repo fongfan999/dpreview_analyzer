@@ -4,9 +4,12 @@ require 'json'
 
 module DSS
   class DpreviewScraper
+    REVIEWS_PREFIX = "https://www.dpreview.com/products/amazon-customer-reviews?renderMode=inline&sort=recentFirst&"
+
     class << self
       def get_all_data_as_json_by_category(category_name, &block)
-        File.write "#{category_name}.json", get_all_data(category_name, &block)
+        File.write "#{category_name}.json", 
+          get_all_data(category_name, &block).to_json
       end
 
       private
@@ -32,8 +35,12 @@ module DSS
         retries = 0
         doc = Nokogiri::HTML(open(link))
 
-        { name: get_name_from(doc), price: get_price_from(doc) }
-          .merge get_quick_specs_from(doc)
+        {
+          name: get_name_from(doc),
+          price: get_price_from(doc),
+          quick_specs: get_quick_specs_from(doc),
+          amazon_reviews: get_amazon_reviews_from(doc, link)
+        } 
       rescue => e
         retries += 1
         retries < 3 ? retry : puts("Couldn't connect to proxy: #{e}")
@@ -49,6 +56,35 @@ module DSS
 
       def get_quick_specs_from(doc)
         Hash[ *doc.css('.quickSpecs td').map(&:text).map(&:strip) ]
+      end
+
+      def get_amazon_reviews_from(doc, link)
+        product_name = link[/[^\/]+$/]
+        reviews_data = []
+        i = 1
+
+        loop do
+          reviews_page = open(
+            REVIEWS_PREFIX + "product=#{product_name}&pageIndex=#{i}", &:read)
+          data = JSON.parse(
+            reviews_page.sub('AmazonCustomerReviews(', '').chomp(')')
+          )
+          page_size = data['pageSize']
+      
+          break if page_size.nil?
+
+          reviews_data << data['reviews']
+            .select { |review| review['rating'] > 2 }
+            .map { |review|
+              review.select { |k, v|
+                k =~ /(rating|summary|content|customerName)/ 
+              }
+            }
+
+          i += 1
+        end
+
+        return reviews_data
       end
     end
   end
