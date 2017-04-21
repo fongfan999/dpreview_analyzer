@@ -61,7 +61,7 @@ module DSS
       def get_amazon_reviews_from(doc, link)
         product_name = link[/[^\/]+$/]
         reviews_data = []
-        i = 1
+        i = 0
 
         loop do
           reviews_page = open(
@@ -69,9 +69,9 @@ module DSS
           data = JSON.parse(
             reviews_page.sub('AmazonCustomerReviews(', '').chomp(')')
           )
-          page_size = data['pageSize']
+          review_count = data['groups'] && data['groups'].first['reviewCount']
       
-          break if page_size.nil?
+          break if review_count.nil?
 
           reviews_data << data['reviews']
             .select { |review| review['rating'] > 2 }
