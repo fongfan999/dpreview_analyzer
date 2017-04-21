@@ -6,16 +6,19 @@ module DSS
   class DpreviewScraper
     class << self
       def get_all_data_as_json_by_category(category_name, &block)
-        File.write 'data.json', get_all_data(category_name, &block) 
+        File.write "#{category_name}.json", get_all_data(category_name, &block)
       end
 
       private
 
       def get_all_data(category_name)
+        data = []
         get_all_product_links(category_name).each_with_index do |link, index|
           yield(link, index) if block_given?
-          get_data_from(link)
+          data << get_data_from(link)
         end
+
+        return data
       end
 
       def get_all_product_links(category_name)
@@ -26,12 +29,11 @@ module DSS
       end
 
       def get_data_from(link)
+        retries = 0
         doc = Nokogiri::HTML(open(link))
 
-        {
-          name: get_name_from(doc), 
-          price: get_price_from(doc)
-        }.merge get_quick_specs_from(doc)
+        { name: get_name_from(doc), price: get_price_from(doc) }
+          .merge get_quick_specs_from(doc)
       rescue => e
         retries += 1
         retries < 3 ? retry : puts("Couldn't connect to proxy: #{e}")
