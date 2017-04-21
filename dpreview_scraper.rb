@@ -69,9 +69,8 @@ module DSS
           data = JSON.parse(
             reviews_page.sub('AmazonCustomerReviews(', '').chomp(')')
           )
-          review_count = data['groups'] && data['groups'].first['reviewCount']
       
-          break if review_count.nil?
+          break if data['reviews'].nil? || data['reviews'].empty?
 
           reviews_data << data['reviews']
             .select { |review| review['rating'] > 2 }
