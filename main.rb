@@ -10,5 +10,7 @@ loop {
   scraper.save
   year_get -= 1
   break if year_get == 1993
-  `git add-commit -m "Update data"`
+  `git add .`
+  `git commit -m "Update data #{year}"`
+  `git push`
 }
