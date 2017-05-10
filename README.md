@@ -1,4 +1,4 @@
-# Welcome Dpreview Scraper
+# Welcome to Dpreview Scraper
 This tool will get and filter Amazon reviews about **Camera** that are rated 3-stars or above.
 
 # How to use
