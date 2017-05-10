@@ -1,5 +1,5 @@
 require_relative 'lib/dpreview/scraper'
-year_get = 2008
+year_get = 2007
 # Please pick year_get from https://www.dpreview.com/products/cameras/all?view=list
 loop { 
   puts year_get
@@ -10,7 +10,7 @@ loop {
   scraper.save
   year_get -= 1
   break if year_get == 1993
-  `git add .`
-  `git commit -m "Update data #{year}"`
-  `git push`
 }
+  `git add .`
+  `git commit -m "Update data #{year_get}"`
+  `git push`
