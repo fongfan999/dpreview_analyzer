@@ -45,7 +45,7 @@ module Dpreview
     end
 
     def save
-      File.write "lib/data/#{year}.json", data.to_json
+      File.write "lib/data/#{year.gsub(' ', '-')}.json", data.to_json
     end
 
     private

@@ -9,6 +9,6 @@ scraper.scrape_amazon_reviews do |size, index|
 end
 scraper.save
 
-`git add .`
+`git add lib/data`
 `git commit -m "Update data #{year}"`
 `git push`
