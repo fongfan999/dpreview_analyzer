@@ -22,11 +22,13 @@ year = available_years.sample
   scraper.save
 
 ## --------------------------------------------------------------------------
+# After we've got data, we can analyze by using SentiWordNet and sort them
+
 # Load the default sentiment dictionaries
 Dpreview::Analyzer.load_senti_dics
 
 # Example
-  analyzer = Dpreview::Analyzer.new(year)
-  analyzer.sort(objectivity: 0.25, by: 'asc')
-  analyzer.save
+analyzer = Dpreview::Analyzer.new(year)
+analyzer.sort(objectivity: 0.25, by: 'asc')
+analyzer.save
 ````

@@ -4,7 +4,7 @@ require_relative 'camera'
 
 module Dpreview
   class Analyzer
-    attr_reader :year
+    attr_reader :year, :instance
 
     def self.load_senti_dics
       SentiWordNet.load_defaults
@@ -39,10 +39,6 @@ module Dpreview
         JSON.parse File.read(File.expand_path("#{@year}.json", 'lib/data'))
       rescue Errno::ENOENT => e
         puts "Data of year #{@year} doesn't exist in lib/data folder"
-      end
-
-      def calculate_average
-        
       end
   end
 end
