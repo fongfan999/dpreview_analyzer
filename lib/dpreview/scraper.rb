@@ -27,7 +27,7 @@ module Dpreview
     end
 
     def initialize(year)
-      @year = year#.to_s
+      @year = year.to_s
       @data = []
     end
 
